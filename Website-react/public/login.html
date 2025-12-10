@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login / Register</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ✅ Inputs aligned left */
+    .container input {
+      display: block;
+      width: 320px;
+      padding: 12px 20px;
+      margin: 10px auto;
+      font-size: 16px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      text-align: left;         /* ✅ align text + placeholder to left */
+      outline: none;
+    }
+
+    /* ✅ Uniform curved buttons */
+    .container button {
+      width: 320px;
+      padding: 12px;
+      margin: 10px auto;
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      border-radius: 30px;
+      background: linear-gradient(45deg, #00BFFF, #1E3C72);
+      color: white;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    .container button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .container {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    hr {
+      width: 60%;
+      margin: 30px auto;
+      border: 0;
+      border-top: 1px solid #ccc;
+    }
+
+    /* Optional: Slight placeholder color improvement */
+    input::placeholder {
+      color: #888;
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body class="login-page">
+  <div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="text" placeholder="Username" id="loginUsername" required />
+      <input type="password" placeholder="Password" id="loginPassword" required />
+      <button type="submit">Login</button>
+    </form>
+
+    <hr>
+
+    <h2>Register</h2>
+    <form id="registerForm">
+      <input type="text" placeholder="New Username" id="newUsername" required />
+      <input type="password" placeholder="New Password" id="newPassword" required />
+      <input type="email" placeholder="Email (Gmail only)" id="newEmail" required />
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('loginUsername').value,
+          password: document.getElementById('loginPassword').value
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        window.location.href = '/skills.html';
+      } else {
+        alert("Login failed. Please check your credentials.");
+      }
+    };
+
+    document.getElementById('registerForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('newUsername').value,
+          password: document.getElementById('newPassword').value,
+          email: document.getElementById('newEmail').value
+        })
+      });
+
+      const text = await res.text();
+      alert(text);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Technical Assessment</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  #timer {
+    font-size: 22px;
+    font-weight: bold;
+    color: green;
+    text-align: center;
+    margin: 10px 0;
+    display: none;
+  }
+
+  .warning {
+    color: red;
+    animation: blink 1s step-start infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  .main {
+    display: none;
+    flex: 1;
+  }
+
+  .video-box, .camera-box {
+    width: 900px;
+    height: 700px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  video {
+    margin-top: 20px;
+    width: 700px;
+    height: 500px;
+    border-radius: 10px;
+    border: 2px solid #6A0572;
+  }
+
+  button {
+    margin: 8px;
+    padding: 10px 20px;
+    background-color: #6A0572;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  #transcript {
+    font-size: 14px;
+    margin-top: 10px;
+    color: #333;
+    max-width: 95%;
+    background: #eee;
+    padding: 10px;
+    border-radius: 6px;
+    white-space: pre-line;
+  }
+
+  h3 {
+    margin-top: 10px;
+    color: #333;
+  }
+
+  #startBtn {
+    font-size: 1.2rem;
+    padding: 12px 30px;
+    margin: 30px auto;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+  <button id="startBtn">▶️ Start Assessment</button>
+  <div id="timer">Remaining Time: --:--</div>
+
+  <div class="main" id="mainDiv">
+    <div class="video-box">
+      <h3>Watch the Question</h3>
+      <video id="questionVideo" controls></video>
+      <button onclick="playQuestion()">Play Question</button>
+      <button id="nextBtn" style="display: none;" onclick="nextQuestion()">Save & Next</button>
+      <button id="endBtn" style="display: none;" onclick="endAssessment()">Finish Assessment</button>
+    </div>
+
+    <div class="camera-box">
+      <h3>Record Your Answer</h3>
+      <video id="userCam" autoplay muted playsinline></video>
+      <button onclick="startRecording()">Start Recording</button>
+      <button onclick="stopRecording()">Stop & Save</button>
+      <div id="transcript"></div>
+    </div>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const mainDiv = document.getElementById('mainDiv');
+    const questionVideo = document.getElementById('questionVideo');
+    const userCam = document.getElementById('userCam');
+    const nextBtn = document.getElementById('nextBtn');
+    const endBtn = document.getElementById('endBtn');
+    const transcriptDiv = document.getElementById('transcript');
+    const timerDiv = document.getElementById('timer');
+
+    let videos = [];
+    let questionIndex = 0;
+    let countdown;
+    let timeRemaining = 0;
+let selectedDuration = 1; // default
+const savedDuration = localStorage.getItem("duration");
+if (savedDuration) {
+  selectedDuration = parseInt(savedDuration);
+} else {
+  alert("⚠️ Please select a time slot first!");
+  window.location.href = "timeslot.html";
+}
+// Default to 10 minutes
+    let recognition, finalTranscript = "";
+    let mediaRecorder, recordedChunks = [];
+    let alertShown = false; // Track if 10-second alert was shown
+
+    // Get duration from URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const duration = localStorage.getItem("duration");
+  console.log("Video duration:", duration, "minutes");
+    const durationParam = urlParams.get("duration");
+    if (durationParam) {
+      selectedDuration = parseInt(durationParam);
+    }
+
+    startBtn.addEventListener('click', async () => {
+      startBtn.disabled = true;
+      startBtn.innerText = "Loading Questions...";
+      await loadVideos();
+      if (!videos.length) {
+        alert("No questions available for this domain.");
+        startBtn.disabled = false;
+        startBtn.innerText = "▶️ Start Assessment";
+        return;
+      }
+      startBtn.style.display = 'none';
+      mainDiv.style.display = 'flex';
+      timerDiv.style.display = 'block';
+      startTimer(selectedDuration); // Use selected duration
+    });
+
+    async function loadVideos() {
+      const res = await fetch("/get-videos");
+      if(res.status === 401){
+        alert("Domain not selected or session expired.");
+        window.location.href = '/skills.html';
+        return;
+      }
+      videos = await res.json();
+      if (!videos.length) return;
+      questionVideo.src = videos[0];
+    }
+
+    function playQuestion() {
+      questionVideo.load();
+      questionVideo.play();
+    }
+
+    async function startRecording() {
+      finalTranscript = '';
+      transcriptDiv.innerText = '';
+
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      userCam.srcObject = stream;
+
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const formData = new FormData();
+        formData.append('video', blob, `answer${questionIndex + 1}.webm`);
+        formData.append('question', questionIndex + 1);
+        await fetch('/upload-answer', { method: 'POST', body: formData });
+
+        if (finalTranscript.trim()) {
+          await fetch('/save-answer', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: questionIndex + 1, answer: finalTranscript })
+          });
+        }
+
+        alert(`✅ Answer ${questionIndex + 1} saved.`);
+
+        if (questionIndex < videos.length - 1) {
+          nextBtn.style.display = 'inline-block';
+        } else {
+          endBtn.style.display = 'inline-block';
+        }
+      };
+
+      mediaRecorder.start();
+      startSpeechRecognition();
+    }
+
+    function stopRecording() {
+      mediaRecorder.stop();
+      userCam.srcObject.getTracks().forEach(track => track.stop());
+      if (recognition) recognition.stop();
+    }
+
+    function nextQuestion() {
+      questionIndex++;
+      questionVideo.src = videos[questionIndex];
+      nextBtn.style.display = 'none';
+      transcriptDiv.innerText = '';
+    }
+
+    function endAssessment() {
+      clearInterval(countdown);
+      window.location.href = '/final-report';
+    }
+
+    function startSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("Speech recognition not supported in this browser.");
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = "en-US";
+
+      recognition.onstart = () => {
+        transcriptDiv.innerText = "🎤 Listening... start speaking";
+      };
+
+      recognition.onresult = (event) => {
+        let interimTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript + " ";
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        transcriptDiv.innerText = finalTranscript + interimTranscript;
+      };
+    }
+
+    // Timer - FIXED: Now uses selected duration and shows alert 10 seconds before end
+    function startTimer(minutes) {
+  timeRemaining = minutes * 60;
+  alertShown = false; // Reset alert flag
+  updateTimerDisplay();
+
+  countdown = setInterval(() => {
+    timeRemaining--;
+    updateTimerDisplay();
+
+    // Show warning when 10 minutes or less remaining
+    if (timeRemaining <= 600 && timeRemaining > 10) {
+      timerDiv.classList.add("warning");
+      // REMOVED: playBeep();
+    }
+
+    // Show alert 10 seconds before end
+    if (timeRemaining <= 10 && timeRemaining > 0 && !alertShown) {
+      alert("⏰ Only 10 seconds remaining! Finish your answer quickly.");
+      alertShown = true;
+      // REMOVED: playBeep();
+    }
+
+    // Auto-submit when time is up
+    if (timeRemaining <= 0) {
+      clearInterval(countdown);
+      alert("⏰ Time is up! Submitting your assessment.");
+      endAssessment();
+    }
+  }, 1000);
+}
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeRemaining / 60);
+      const secs = timeRemaining % 60;
+      timerDiv.innerText = "Remaining Time: " + mins + ":" + (secs < 10 ? "0" + secs : secs);
+    }
+
+    
+  </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page">
+  <div class="container">
+    <h2>Admin Dashboard</h2>
+
+    <h3>All Registered Users</h3>
+    <ul id="userList">Loading...</ul>
+
+    <h3>User Answers</h3>
+    <select id="userSelect" onchange="loadAnswers(this.value)">
+      <option value="">-- Select a user --</option>
+    </select>
+
+    <ol id="answerList"></ol>
+
+    <div style="margin-top: 20px;">
+      <button onclick="window.location.href='/'">Go to Homepage</button>
+    </div>
+  </div>
+
+  <script>
+    async function loadUsers() {
+      const res = await fetch('/admin/users');
+      const users = await res.json();
+
+      const ul = document.getElementById('userList');
+      const select = document.getElementById('userSelect');
+      ul.innerHTML = '';
+      select.innerHTML = '<option value="">-- Select a user --</option>';
+
+      users.forEach(user => {
+        const li = document.createElement('li');
+        li.textContent = user.username;
+        ul.appendChild(li);
+
+        const option = document.createElement('option');
+        option.value = user.username;
+        option.textContent = user.username;
+        select.appendChild(option);
+      });
+    }
+
+    async function loadAnswers(username) {
+      if (!username) return;
+      const res = await fetch('/admin/answers/' + username);
+      const answers = await res.json();
+      const list = document.getElementById('answerList');
+      list.innerHTML = '';
+      answers.forEach(ans => {
+        const item = document.createElement('li');
+        item.textContent = `Q${ans.question}: ${ans.answer} (Session: ${new Date(ans.timestamp).toLocaleString()})`;
+        list.appendChild(item);
+      });
+    }
+
+    loadUsers();
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Your Skill</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Center everything and adjust spacing */
+    .container {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .container button {
+      display: block;
+      margin: 15px auto;     /* equal vertical spacing */
+      width: 220px;          /* fixed width for all buttons */
+      padding: 12px;         /* consistent height */
+      font-size: 18px;       /* readable text */
+      text-align: center;    /* center text */
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .logout-btn {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body class="login-page">
+  <div class="container">
+    <h2>Choose Your Skill Track</h2>
+    
+    <!-- Technical Skills first -->
+    <button onclick="window.location.href='/guidelines.html'">Technical Skills</button>
+    <!-- Soft Skills below -->
+    <button onclick="window.location.href='/softskills.html'">Soft Skills</button>
+    
+    <br>
+    <button class="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+  </div>
+</body>
+</html>

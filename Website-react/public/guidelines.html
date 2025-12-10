@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Assessment Guidelines</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+      text-align: center;
+    }
+
+    .box {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    h2 {
+      text-align: center;
+      color: #6A0572;
+      margin-bottom: 25px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.8;
+    }
+
+    ul li {
+      margin-bottom: 12px;
+      padding-left: 25px;
+      position: relative;
+    }
+
+    ul li::before {
+      content: "✔️";
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 12px 28px;
+      font-size: 16px;
+      background: #6A0572;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #54045a;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>📝 Assessment Guidelines</h2>
+    <ul>
+      <li>Maintain a stable internet connection throughout the assessment.</li>
+      <li>Use a laptop or desktop with a functioning camera and microphone.</li>
+      <li>Work in a quiet, well-lit environment for better video analysis.</li>
+      <li>Each question will be presented as a video — record your answers clearly.</li>
+      <li>Questions can be skipped, and you may end the assessment early.</li>
+      <li>A performance report will be generated automatically after submission.</li>
+    </ul>
+
+    <button onclick="startAssessment()">Start Assessment</button>
+  </div>
+
+  <script>
+    const subject = new URLSearchParams(window.location.search).get('subject');
+
+    function startAssessment() {
+      if (subject) {
+        window.location.href = `timeslot.html?subject=${subject}`;
+      } else {
+        window.location.href = "timeslot.html";
+      }
+    }
+  </script>
+</body>
+</html>

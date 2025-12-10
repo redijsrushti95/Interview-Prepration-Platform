@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Body Posture Detection</title>
+  <style>
+    body { text-align: center; font-family: Arial; background: #f9f9f9; }
+    video, canvas { width: 640px; height: 480px; border: 2px solid #6A0572; border-radius: 8px; }
+    #status { margin-top: 15px; font-size: 20px; font-weight: bold; color: #6A0572; }
+  </style>
+</head>
+<body>
+  <h2>🧍 Body Posture Detection</h2>
+  <video id="webcam" autoplay playsinline></video>
+  <canvas id="output"></canvas>
+  <div id="status">Analyzing posture...</div>
+
+  <!-- Mediapipe Pose -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+
+  <script>
+    const videoElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('output');
+    const canvasCtx = canvasElement.getContext('2d');
+    const statusDiv = document.getElementById("status");
+
+    function onResults(results) {
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+      if (results.poseLandmarks) {
+        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
+          { color: '#6A0572', lineWidth: 3 });
+        drawLandmarks(canvasCtx, results.poseLandmarks,
+          { color: '#FF0000', lineWidth: 1 });
+
+        // Simple logic: check if shoulders are level
+        const leftShoulder = results.poseLandmarks[11];
+        const rightShoulder = results.poseLandmarks[12];
+
+        if (Math.abs(leftShoulder.y - rightShoulder.y) > 0.05) {
+          statusDiv.innerText = "⚠️ Bad posture detected!";
+        } else {
+          statusDiv.innerText = "✅ Good posture";
+        }
+      }
+    }
+
+    const pose = new Pose.Pose({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+    });
+
+    pose.setOptions({
+      modelComplexity: 1,
+      smoothLandmarks: true,
+      enableSegmentation: false,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+
+    pose.onResults(onResults);
+
+    const camera = new Camera(videoElement, {
+      onFrame: async () => { await pose.send({ image: videoElement }); },
+      width: 640,
+      height: 480
+    });
+    camera.start();
+  </script>
+</body>
+</html>

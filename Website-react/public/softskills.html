@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Soft Skills Assessment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #6A0572;
+      margin-bottom: 20px;
+    }
+    button {
+      display: block;
+      width: 220px;
+      margin: 10px auto;
+      padding: 12px;
+      font-size: 16px;
+      background: #6A0572;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #8a2be2;
+    }
+    .logout-btn {
+      margin-top: 20px;
+      background: crimson;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Choose a Soft Skill Assessment</h2>
+    <button onclick="location.href='/analyze/posture'">📏 Body Posture Detection</button>
+    <button onclick="location.href='/analyze/eye'">👀 Eye Contact Analysis</button>
+    <button onclick="location.href='/analyze/fer'">😊 Emotion Detection</button>
+    <button onclick="location.href='/analyze/sound'">🎤 Analyze Sound</button>
+    <button class="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+    
+  </div>
+</body>
+</html>
+

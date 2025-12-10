@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pick-Up Tool | Home</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #6c12cde1, #256ae1);
+      color: #fff;
+      min-height: 20vh;
+      overflow-x: hidden;
+    }
+
+    header, footer {
+      text-align: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #ccc;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 30px 10px 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: #ccc;
+      max-width: 800px;
+      margin: 2px auto;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 7px 18px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background-color: #2d10d6;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: 0.3s ease-in-out;
+    }
+
+    .btn:hover {
+      background-color: #9cbff2;
+      transform: scale(1.05);
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin: 5px 0 10px;
+      color: #ffffff;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      padding: 0 10px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(4px);
+      padding: 10px;
+      border-radius: 16px;
+      width: 300px;
+      height: 110px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(79, 2, 2, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .card strong {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .card p {
+      font-size: 1rem;
+      color: #dddddd;
+    }
+
+    .step-number {
+      background: #b4a5d0;
+      color: white;
+      font-size: 1rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .card {
+        width: 90%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>Pick-Up Tool</h2>
+  </header>
+
+  <div class="hero">
+    <h1>Bridging the Gap</h1>
+    <p>Prepare for real interviews with AI-powered video questions and instant performance feedback.</p>
+    <a href="/login.html" class="btn">Get Started</a>
+  </div>
+
+  <section>
+    <h2 class="section-title">Key Features</h2>
+    <div class="grid">
+      <div class="card">
+        <strong>🎥 AI Interviews</strong>
+        <p>Simulated real-time video-based Q&A sessions.</p>
+      </div>
+      <div class="card">
+        <strong>📊 Smart Feedback</strong>
+        <p>Posture, grammar, emotion, and accuracy analyzed.</p>
+      </div>
+      <div class="card">
+        <strong>⚡ Instant Insights</strong>
+        <p>Real-time clarity and eye contact evaluation.</p>
+      </div>
+      <div class="card">
+        <strong>📈 Reports</strong>
+        <p>Visual summary of your performance trends.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">How It Works</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="step-number">1</div>
+        <p>Sign up and log in</p>
+      </div>
+      <div class="card">
+        <div class="step-number">2</div>
+        <p>Select a track: Technical or Soft Skills</p>
+      </div>
+      <div class="card">
+        <div class="step-number">3</div>
+        <p>Answer video-based questions</p>
+      </div>
+      <div class="card">
+        <div class="step-number">4</div>
+        <p>Receive your performance report</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Pick-Up Tool. All rights reserved.
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Time Slot | Pick-Up Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h2 {
+      color: #6A0572;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 15px 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(45deg, #00BFFF, #1E3C72);
+      color: white;
+      margin: 10px;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Select Your Interview Time Slot</h2>
+  <p>Choose how long your interview will be:</p>
+
+  <button onclick="selectSlot(1)">1 Minutes</button>
+  <button onclick="selectSlot(15)">15 Minutes</button>
+  <button onclick="selectSlot(20)">20 Minutes</button>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const subject = urlParams.get("subject");
+
+function selectSlot(duration) {
+  localStorage.setItem("duration", duration); // ✅ Save user’s choice
+  window.location.href = "domains.html";      // redirect without query
+}
+
+
+    
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+<h2>Your Technical Skill Assessment</h2>
+<ul id="resultsList"></ul>
+<script>
+  fetch('/analyze-answers', { method: 'POST' })
+    .then(res => res.json())
+    .then(results => {
+      const list = document.getElementById('resultsList');
+      list.innerHTML = results.map(r =>
+        `<li>Q${r.question}: ${r.percentage}% correctness</li>`
+      ).join('');
+    });
+</script>

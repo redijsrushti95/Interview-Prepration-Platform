@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎤 Real-Time Sound Analyzer</title>
+  <style>
+    body {
+      background: #111;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      padding-top: 60px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #00eaff;
+      color: #111;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover { background: #00bcd4; }
+    .result { margin-top: 40px; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <h1>🎧 Real-Time Sound Analyzer</h1>
+  <button onclick="startAnalysis()">🎙️ Analyze Sound</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+async function startAnalysis() {
+  document.getElementById("output").innerHTML = "Recording for 3 seconds...";
+  const response = await fetch("/analyze/sound");
+  const { success, data, rawOutput } = await response.json();
+  if (success && data) {
+    document.getElementById("output").innerHTML = `
+      <p>🗣️ You said: <b>${data.text}</b></p>
+      <p>${data.pitch_volume_feedback}</p>
+      <p>${data.speech_rate_feedback}</p>
+    `;
+  } else {
+    document.getElementById("output").innerHTML = "⚠️ Analysis failed.";
+    console.log(rawOutput);
+  }
+}
+
+  </script>
+</body>
+</html>

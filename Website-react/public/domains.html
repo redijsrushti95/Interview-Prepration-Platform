@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Select Domain</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ✅ Added minimal inline style for vertical button layout */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px; /* space between buttons */
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      width: 220px;       /* same width for all buttons */
+      padding: 12px;      /* consistent height */
+      font-size: 16px;    /* slightly larger text */
+      text-align: center; /* center text */
+    }
+
+    .logout-btn {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body class="login-page">
+  <div class="container">
+    <h2>Select a Domain</h2>
+
+    <!-- Buttons vertically arranged -->
+    <div class="button-group">
+      <button onclick="chooseDomain('python')">Python</button>
+      <button onclick="chooseDomain('ds')">Data Structures</button>
+      <button onclick="chooseDomain('dbms')">DBMS</button>
+      <button onclick="chooseDomain('os')">Operating System</button>
+      <button onclick="chooseDomain('cn')">Computer Networks</button>
+    </div>
+
+    <!-- Logout at bottom -->
+    <button class="logout-btn" onclick="window.location.href='/logout'">Logout</button>
+  </div>
+
+  <script>
+    function chooseDomain(domain) {
+      fetch('/choose-domain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain })
+      })
+      .then(res => res.ok ? window.location.href = 'video.html' : alert("Failed to set domain. Try again."))
+      .catch(err => console.error("Domain select error:", err));
+    }
+  </script>
+</body>
+</html>
+ 
